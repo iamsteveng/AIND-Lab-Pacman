@@ -68,23 +68,61 @@ def tinyMazeSearch(problem):
   return  [s,s,w,s,w,w,s,w]
 
 def depthFirstSearch(problem):
-  """
-  Search the deepest nodes in the search tree first
-  [2nd Edition: p 75, 3rd Edition: p 87]
-  
-  Your search algorithm needs to return a list of actions that reaches
-  the goal.  Make sure to implement a graph search algorithm 
-  [2nd Edition: Fig. 3.18, 3rd Edition: Fig 3.7].
-  
-  To get started, you might want to try some of these simple commands to
-  understand the search problem that is being passed in:
-  
-  print "Start:", problem.getStartState()
-  print "Is the start a goal?", problem.isGoalState(problem.getStartState())
-  print "Start's successors:", problem.getSuccessors(problem.getStartState())
-  """
-  "*** YOUR CODE HERE ***"
-  util.raiseNotDefined()
+    """
+    Search the deepest nodes in the search tree first
+    [2nd Edition: p 75, 3rd Edition: p 87]
+
+    Your search algorithm needs to return a list of actions that reaches
+    the goal.  Make sure to implement a graph search algorithm
+    [2nd Edition: Fig. 3.18, 3rd Edition: Fig 3.7].
+
+    To get started, you might want to try some of these simple commands to
+    understand the search problem that is being passed in:
+
+    """
+    print "Start:", problem.getStartState()
+    print "Is the start a goal?", problem.isGoalState(problem.getStartState())
+    print "Start's successors:", problem.getSuccessors(problem.getStartState())
+
+
+    action_stack = recursiveDFS(problem, problem.getStartState())
+    action_list = []
+    if not action_stack:
+        print "NO RESULT !!!!!!!!!!!!!"
+        return action_list
+    else:
+        from util import Stack
+        action = action_stack.pop()
+        while not action:
+            action_list.append(action)
+            action = action_stack.pop()
+        return action_list
+
+def recursiveDFS(problem, state=None, action=None):
+    """
+
+    :param problem:
+    :param state: Current position
+    :param action: The action taken to move to current position
+    :return: Action stack
+    """
+    from util import Stack
+    # if the state is goal state, return this action
+    if problem.isGoalState(state):
+        action_stack = Stack()
+        action_stack.push(action)
+        return action_stack
+    # else explore the next state
+    successors = problem.getSuccessors(state)
+    if successors is None:
+        return False
+    for s in successors:
+        action_stack = recursiveDFS(problem, s[0], s[1])
+        if action_stack is not False:
+            action_stack.push(s[1])
+            return action_stack
+    # No next action available
+    return False
 
 def breadthFirstSearch(problem):
   """
