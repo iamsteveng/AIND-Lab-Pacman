@@ -92,13 +92,13 @@ def depthFirstSearch(problem):
         return action_list
     else:
         from util import Stack
-        action = action_stack.pop()
-        while not action:
-            action_list.append(action)
+        # Pop the stack and convert to an action list
+        while not action_stack.isEmpty():
             action = action_stack.pop()
+            action_list.append(action)
         return action_list
 
-def recursiveDFS(problem, state=None, action=None):
+def recursiveDFS(problem, state=None, action=None, limit=900, visitedStateList=[]):
     """
 
     :param problem:
@@ -112,16 +112,32 @@ def recursiveDFS(problem, state=None, action=None):
         action_stack = Stack()
         action_stack.push(action)
         return action_stack
+    elif limit == 0:
+        return False
     # else explore the next state
     successors = problem.getSuccessors(state)
     if successors is None:
         return False
+    visitedStateList.append(state)
     for s in successors:
-        action_stack = recursiveDFS(problem, s[0], s[1])
+        # Avoid visiting visited states
+        if is_visited(visitedStateList, s[0]):
+            continue
+        # Explore the next state
+        action_stack = recursiveDFS(problem, s[0], s[1], limit-1)
+        # If this action leads to goal state
         if action_stack is not False:
-            action_stack.push(s[1])
+            if action: # This checking is for initial calling of function recursiveDFS with action=None
+                # Save the current action and then return
+                action_stack.push(action)
             return action_stack
     # No next action available
+    return False
+
+def is_visited(visitedStateList, check_state):
+    for s in visitedStateList:
+        if s == check_state:
+            return True
     return False
 
 def breadthFirstSearch(problem):
