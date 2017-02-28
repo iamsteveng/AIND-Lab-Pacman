@@ -124,7 +124,7 @@ def recursiveDFS(problem, state=None, action=None, limit=900, visitedStateList=[
         if is_visited(visitedStateList, s[0]):
             continue
         # Explore the next state
-        action_stack = recursiveDFS(problem, s[0], s[1], limit-1)
+        action_stack = recursiveDFS(problem, s[0], s[1], limit-1, visitedStateList)
         # If this action leads to goal state
         if action_stack is not False:
             if action: # This checking is for initial calling of function recursiveDFS with action=None
