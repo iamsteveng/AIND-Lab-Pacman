@@ -141,13 +141,52 @@ def is_visited(visitedStateList, check_state):
     return False
 
 def breadthFirstSearch(problem):
-  """
-  Search the shallowest nodes in the search tree first.
-  [2nd Edition: p 73, 3rd Edition: p 82]
-  """
-  "*** YOUR CODE HERE ***"
-  util.raiseNotDefined()
-      
+    """
+    Search the shallowest nodes in the search tree first.
+    [2nd Edition: p 73, 3rd Edition: p 82]
+    Test case: python pacman.py -l mediumMaze -p SearchAgent -a fn=bfs
+    Test case: python pacman.py -l bigMaze -p SearchAgent -a fn=bfs -z .5
+    """
+    from util import Queue
+    import copy
+    frontier = Queue()
+    solution_space = Queue()
+    explored = []
+
+    if problem.isGoalState(problem.getStartState()):
+        return []
+    # Kick start with the start state
+    frontier.push(problem.getStartState())
+    # Save the action stack (ancestor path) together with the state
+    solution_space.push([])
+    explored.append(problem.getStartState())
+
+    while True:
+        if frontier.isEmpty():
+            return False
+        # Get the first one from the Queue to explore
+        current_state = frontier.pop()
+        action_stack = solution_space.pop()
+        # Search for child states
+        successors = problem.getSuccessors(current_state)
+        for s in successors:
+            (next_state, next_action, cost) = s
+            # Skip visited state (frontier and explored), prevent infinite loop
+            if is_visited(explored, next_state):
+                continue
+            # Deep copy the ancestor path and add this successor
+            # so that we can return the action stack (ancestor path) whenever we found the goal state
+            next_action_stack = copy.deepcopy(action_stack)
+            next_action_stack.append(next_action)
+            # Return action stack when found the goal state
+            if problem.isGoalState(next_state):
+                return next_action_stack
+            # If not goal state, push the state into frontier for later exploration
+            frontier.push(next_state)
+            # Save the action stack (ancestor path) together with the state
+            solution_space.push(next_action_stack)
+            explored.append(next_state)
+
 def uniformCostSearch(problem):
   "Search the node of least total cost first. "
   "*** YOUR CODE HERE ***"
