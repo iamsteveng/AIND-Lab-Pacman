@@ -150,23 +150,20 @@ def breadthFirstSearch(problem):
     from util import Queue
     import copy
     frontier = Queue()
-    solution_space = Queue()
     explored = []
 
     if problem.isGoalState(problem.getStartState()):
         return []
     # Kick start with the start state
-    frontier.push(problem.getStartState())
     # Save the action stack (ancestor path) together with the state
-    solution_space.push([])
+    frontier.push((problem.getStartState(), []))
     explored.append(problem.getStartState())
 
     while True:
         if frontier.isEmpty():
             return False
         # Get the first one from the Queue to explore
-        current_state = frontier.pop()
-        action_stack = solution_space.pop()
+        (current_state, action_stack) = frontier.pop()
         # Search for child states
         successors = problem.getSuccessors(current_state)
         for s in successors:
@@ -182,9 +179,8 @@ def breadthFirstSearch(problem):
             if problem.isGoalState(next_state):
                 return next_action_stack
             # If not goal state, push the state into frontier for later exploration
-            frontier.push(next_state)
             # Save the action stack (ancestor path) together with the state
-            solution_space.push(next_action_stack)
+            frontier.push((next_state, next_action_stack))
             explored.append(next_state)
 
 def uniformCostSearch(problem):
